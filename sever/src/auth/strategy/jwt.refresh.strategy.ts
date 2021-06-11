@@ -1,15 +1,16 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { jwtConstants } from '../constants';
 import { Request as IRequest } from 'express';
+import { AuthService } from 'auth/auth.service';
 
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(
   Strategy,
   'jwt-refreshtoken',
 ) {
-  constructor() {
+  constructor(private authService: AuthService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: IRequest) => {
@@ -22,6 +23,17 @@ export class JwtRefreshStrategy extends PassportStrategy(
   }
 
   async validate(payload: any) {
-    return { userId: payload.userId, username: payload.username };
+    const { userId, username, exp } = payload;
+
+    const user = await this.authService.isHasUser(username);
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
+    return {
+      userId: userId,
+      username: username,
+      exp: exp,
+    };
   }
 }

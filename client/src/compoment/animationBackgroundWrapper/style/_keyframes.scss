@@ -1,0 +1,26 @@
+@keyframes animStart {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(-2000px);
+  }
+}
+
+@keyframes animStartLeft {
+  from {
+    transform: translate(500px, 0);
+  }
+  to {
+    transform: translate(-3000px, -3500px);
+  }
+}
+
+@keyframes animStartRight {
+  from {
+    transform: translate(-500px, 0);
+  }
+  to {
+    transform: translate(3000px, -3500px);
+  }
+}

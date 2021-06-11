@@ -18,6 +18,10 @@ export class AuthService {
     return null;
   }
 
+  async isHasUser(username: string): Promise<any> {
+    return await this.usersService.findOne(username);
+  }
+
   createToken(username: string, userId: string, expiresIn = '60s') {
     const accessTokenValue = this.jwtService.sign(
       {
@@ -59,7 +63,6 @@ export class AuthService {
   async login(user: any) {
     const payload = { username: user.username, sub: user.userId };
     const access_token = this.createToken(payload.username, payload.sub);
-
     const refresh_token = this.createRefreshTokenValue(
       payload.username,
       payload.sub,

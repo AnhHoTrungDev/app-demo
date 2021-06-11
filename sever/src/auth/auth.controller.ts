@@ -1,8 +1,9 @@
-import { Controller, Post, UseGuards, Request, Res, Get } from '@nestjs/common';
+import { Controller, Post, UseGuards, Res, Get } from '@nestjs/common';
 import { LocalAuthGuard } from './guard/local-auth.guard';
 import { Response as IResponse } from 'express';
 import { JwtRefreshAuthGuard } from 'auth/guard/jwt.refresh.guard';
 import { AuthService } from './auth.service';
+import { CurrentUser } from 'common/decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -10,23 +11,36 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req, @Res({ passthrough: true }) response: IResponse) {
-    const result = await this.authService.login(req.user);
+  async login(
+    @Res({ passthrough: true }) response: IResponse,
+    @CurrentUser() currentUser,
+  ) {
+    const result = await this.authService.login(currentUser);
     const expiresValue = new Date(result.refresh_token.exp * 1000);
     response.cookie('refresh-token', 'Bearer ' + result.refresh_token.token, {
       httpOnly: true,
       expires: expiresValue,
     });
-    response.cookie('refresh-exp', result.refresh_token.exp, {
-      expires: expiresValue,
-    });
-    return result.access_token;
+
+    return {
+      ['current-user']: {
+        username: currentUser.username,
+      },
+      ...result.access_token,
+      ['refresh-token-exp']: result.refresh_token.exp,
+    };
   }
 
   @UseGuards(JwtRefreshAuthGuard)
   @Get('refresh/token')
-  refreshToken(@Request() req) {
-    const { username, userId } = req.user;
-    return this.authService.createToken(username, userId);
+  refreshToken(@CurrentUser() currentUser) {
+    const { username, userId, exp } = currentUser;
+    return {
+      ['current-user']: {
+        username,
+      },
+      ...this.authService.createToken(username, userId),
+      ['refresh-token-exp']: exp,
+    };
   }
 }

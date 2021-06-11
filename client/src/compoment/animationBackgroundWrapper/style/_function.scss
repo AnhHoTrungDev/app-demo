@@ -1,0 +1,20 @@
+@function multiple-bos-shadow($n) {
+  $value: "#{random(2000)}px #{random(20000)}px #FFF";
+
+  @for $i from 2 through $n {
+    $value: "#{$value} , #{random(2000)}px #{random(2000)}px #FFF";
+  }
+
+  @return unquote($value);
+}
+
+
+@function multiple-bos-shadow2($n) {
+  $value: "#{random(3000)}px #{random(30000)}px #FFF";
+
+  @for $i from 2 through $n {
+    $value: "#{$value} , #{random(2000)}px #{random(2000)}px #FFF";
+  }
+
+  @return unquote($value);
+}

@@ -37,7 +37,7 @@ export class LoggingInterceptor implements NestInterceptor {
         this.showLogAction(method, url, now);
       }),
       catchError((error) => {
-        console.log('  return throwError(error); :>> ', error);
+        console.log('return throwError(error); :>> ', error);
         this.showLogAction(method, url, now);
         this.showLogError(error);
         return throwError(error);

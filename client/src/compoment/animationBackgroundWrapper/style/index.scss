@@ -1,0 +1,111 @@
+@import "function";
+@import "./available";
+@import "./keyframes";
+
+.background-wrapper {
+  width: 100%;
+  height: 100%;
+}
+.background-wrapper_wrapper {
+  opacity: 0.4;
+}
+
+#dots {
+  z-index: 1;
+  width: 1px;
+  height: 1px;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: $shadows-small;
+  animation: animStartLeft 70s linear infinite;
+  &:after {
+    z-index: 1;
+    content: " ";
+    position: absolute;
+    top: 2000px;
+    width: 1px;
+    height: 1px;
+    border-radius: 50%;
+    background: transparent;
+    box-shadow: $shadows-small;
+    animation: animStartRight 70s linear infinite;
+  }
+}
+
+#dots2 {
+  z-index: 1;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: $shadows-medium;
+  animation: animStartLeft 120s linear infinite;
+  &:after {
+    z-index: 1;
+    content: " ";
+    position: absolute;
+    top: 2000px;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: transparent;
+    box-shadow: $shadows-medium;
+    animation: animStartRight 120s linear infinite;
+  }
+}
+
+#dots3 {
+  &::before {
+    z-index: 1;
+    content: " ";
+    position: absolute;
+    top: 2000px;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: transparent;
+    box-shadow: $shadows-big;
+    animation: animStartLeft 150s linear infinite;
+  }
+  z-index: 1;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: $shadows-big;
+  animation: animStartRight 150s linear infinite;
+  &:after {
+    z-index: 1;
+    content: " ";
+    position: absolute;
+    top: 2000px;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: transparent;
+    box-shadow: $shadows-small2;
+    animation: animStartLeft 100s linear infinite;
+  }
+}
+
+#dots4 {
+  z-index: 1;
+  width: 1px;
+  height: 1px;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: $shadows-small2;
+  animation: animStartRight 200s linear infinite;
+  &:after {
+    z-index: 1;
+    content: " ";
+    position: absolute;
+    top: 2000px;
+    width: 1px;
+    height: 1px;
+    border-radius: 50%;
+    background: transparent;
+    box-shadow: $shadows-small2;
+    animation: animStartLeft 200s linear infinite;
+  }
+}

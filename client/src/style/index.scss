@@ -1,0 +1,46 @@
+@import "function";
+@import "./available";
+@import "./keyframes";
+
+html {
+  height: 100%;
+  background: radial-gradient(#182732 0%, #090a0f 100%);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.app {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container-center {
+  padding: 12px 0px;
+  //   background-color: red;
+  padding: 20px;
+  border-radius: 7px;
+  height: auto;
+}
+
+.form-data {
+  width: 100%;
+  max-width: 300px;
+  margin-bottom: 12px;
+  display: inline-block;
+
+  & input {
+    width: 98%;
+    height: 30px;
+    border-radius: 7px;
+    border: 1px solid #ccc;
+    outline: none;
+    padding-left: 3px;
+  }
+}
+
+.container {
+  width: 40vh;
+}
