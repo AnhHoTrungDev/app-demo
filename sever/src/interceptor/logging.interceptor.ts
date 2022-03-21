@@ -29,8 +29,7 @@ export class LoggingInterceptor implements NestInterceptor {
     // );
 
     const req: Request = context.switchToHttp().getRequest();
-    const { method, url, body, headers } = req;
-    console.log('body :>> ', body);
+    const { method, url } = req;
 
     return next.handle().pipe(
       tap(() => {
@@ -46,7 +45,7 @@ export class LoggingInterceptor implements NestInterceptor {
   }
 
   /**
-   * show log action type, function name, time exe and date time.
+   * NOTE show log action type, function name, time exe and date time.
    */
   public showLogAction(actionType: string, functionName: string, now: number) {
     console.log(
@@ -62,7 +61,7 @@ export class LoggingInterceptor implements NestInterceptor {
   }
 
   /**
-   * show log time finish action
+   * NOTE show log time finish action
    */
   public showTimeFinishAction(actionType: string, now: number) {
     console.log(
@@ -76,7 +75,7 @@ export class LoggingInterceptor implements NestInterceptor {
   }
 
   /**
-   * show log error
+   * NOTE  show log error
    */
   public showLogError(error: any) {
     console.error(

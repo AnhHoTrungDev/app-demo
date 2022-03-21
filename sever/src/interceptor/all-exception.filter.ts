@@ -13,6 +13,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const response = ctx.getResponse();
     const request = ctx.getRequest();
 
+    //NOTE run wwhen have error
     const status =
       exception instanceof HttpException
         ? exception.getStatus()
@@ -23,7 +24,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? exception.getResponse()
         : 'Internal server';
 
-    if (status === HttpStatus.UNAUTHORIZED) {
+    if (
+      status === HttpStatus.UNAUTHORIZED &&
+      request.originalUrl === '/auth/refresh/token'
+    ) {
       response.setHeader(
         'Set-Cookie',
         `refresh-token=; HttpOnly; Path=/; Max-Age=0;SameSite=None; Secure`,
@@ -31,10 +35,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
     }
 
     response.status(status).json({
-      status,
-      timestamp: new Date().toUTCString(),
-      message,
-      path: request.route.path,
+      ...message,
+      path: request?.route?.path,
     });
     return;
   }

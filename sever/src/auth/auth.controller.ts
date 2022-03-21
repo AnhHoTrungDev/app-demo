@@ -1,9 +1,11 @@
-import { Controller, Post, UseGuards, Res, Get } from '@nestjs/common';
+import { Controller, Post, UseGuards, Res, Get, Body } from '@nestjs/common';
 import { LocalAuthGuard } from './guard/local-auth.guard';
 import { Response as IResponse } from 'express';
 import { JwtRefreshAuthGuard } from 'auth/guard/jwt.refresh.guard';
 import { AuthService } from './auth.service';
 import { CurrentUser } from 'common/decorator';
+import { User } from 'users/schema/user.schema';
+import { CreateUserDto } from 'users/dto/create-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -25,6 +27,7 @@ export class AuthController {
     return {
       ['current-user']: {
         username: currentUser.username,
+        fullName: currentUser.fullName,
       },
       ...result.access_token,
       ['refresh-token-exp']: result.refresh_token.exp,
@@ -42,5 +45,10 @@ export class AuthController {
       ...this.authService.createToken(username, userId),
       ['refresh-token-exp']: exp,
     };
+  }
+
+  @Post('register')
+  register(@Body() createUserDto: CreateUserDto): Promise<User> {
+    return this.authService.createUser(createUserDto);
   }
 }

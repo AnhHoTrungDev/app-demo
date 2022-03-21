@@ -4,6 +4,9 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { jwtConstants } from '../constants';
 import { AuthService } from 'auth/auth.service';
 
+/**
+ * NOTE  identification user before go to controller
+ */
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private authService: AuthService) {
@@ -25,6 +28,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     return {
       userId: userId,
       username: username,
+      fullName: user.fullName,
       exp: exp,
     };
   }
