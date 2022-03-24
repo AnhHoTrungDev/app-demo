@@ -6,14 +6,34 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { TYPEORM } from '@environments';
-import { MongooseModule } from '@nestjs/mongoose';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { BooksModule } from './books/books.module';
+import { MedialModule } from './medial/medial.module';
 
 @Module({
   imports: [
+    TypeOrmModule.forRoot({
+      ...TYPEORM,
+      type: 'mongodb',
+      // host: MLAB_HOST,
+      // port: MLAB_PORT,
+      // database: MLAB_DATABASE,
+      // username: MLAB_USER,
+      // password: MLAB_PASS,
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      // ssl: true,
+      synchronize: true,
+      autoLoadEntities: true,
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      keepConnectionAlive: true,
+      logging: true,
+    }),
     ConfigModule.forRoot({}),
     AuthModule,
     UsersModule,
-    MongooseModule.forRoot(TYPEORM.url),
+    BooksModule,
+    MedialModule,
   ],
   controllers: [AppController],
   providers: [AppService],

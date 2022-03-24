@@ -1,10 +1,17 @@
-import { Controller, Post, UseGuards, Res, Get, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  UseGuards,
+  Res,
+  Get,
+  Body,
+  BadRequestException,
+} from '@nestjs/common';
 import { LocalAuthGuard } from './guard/local-auth.guard';
 import { Response as IResponse } from 'express';
 import { JwtRefreshAuthGuard } from 'auth/guard/jwt.refresh.guard';
 import { AuthService } from './auth.service';
 import { CurrentUser } from 'common/decorator';
-import { User } from 'users/schema/user.schema';
 import { CreateUserDto } from 'users/dto/create-user.dto';
 
 @Controller('auth')
@@ -48,7 +55,36 @@ export class AuthController {
   }
 
   @Post('register')
-  register(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.authService.createUser(createUserDto);
+  async register(
+    @Res({ passthrough: true }) response: IResponse,
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<any> {
+    const currentUser = (await this.authService.createUser(
+      createUserDto,
+    )) as unknown as any;
+
+    const { email: username, id: userId, fullName, errmsg } = currentUser;
+    if (errmsg) {
+      throw new BadRequestException(errmsg);
+    }
+    const result = await this.authService.login({
+      username,
+      userId,
+      fullName,
+    });
+    const expiresValue = new Date(result.refresh_token.exp * 1000);
+    response.cookie('refresh-token', 'Bearer ' + result.refresh_token.token, {
+      httpOnly: true,
+      expires: expiresValue,
+    });
+
+    return {
+      ['current-user']: {
+        username,
+        fullName,
+      },
+      ...result.access_token,
+      ['refresh-token-exp']: result.refresh_token.exp,
+    };
   }
 }

@@ -1,28 +1,34 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model, FilterQuery } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 
-import { User, UserDocument } from './schema/user.schema';
 import { SALT_OR_ROUNDS } from '@environments';
+import { User } from './schema/user.entity';
+import { MongoRepository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
-  async findOne(useFilterQuery: FilterQuery<User>): Promise<User | any> {
-    return this.userModel.findOne(useFilterQuery);
+  constructor(
+    @InjectRepository(User)
+    private readonly usersRepository: MongoRepository<User>,
+  ) {}
+
+  async findOne(useFilterQuery: Partial<User>): Promise<User> {
+    return this.usersRepository.findOne(useFilterQuery);
   }
+
   async create(
     email: string,
     rawPassword: string,
     fullName: string,
   ): Promise<User> {
-    const password = await bcrypt.hash(rawPassword, SALT_OR_ROUNDS);
-    const user = new this.userModel({
-      email,
-      password,
-      fullName,
-    });
-    return user.save();
+    try {
+      const password = await bcrypt.hash(rawPassword, SALT_OR_ROUNDS);
+      return await this.usersRepository.save(
+        new User({ email, password, fullName }),
+      );
+    } catch (error) {
+      return error;
+    }
   }
 }
