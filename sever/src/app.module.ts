@@ -7,8 +7,8 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { TYPEORM } from '@environments';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { BooksModule } from './books/books.module';
-import { MedialModule } from './medial/medial.module';
+import { MediaModule } from './media/media.module';
+import { VideoModule } from './video/video.module';
 
 @Module({
   imports: [
@@ -32,8 +32,8 @@ import { MedialModule } from './medial/medial.module';
     ConfigModule.forRoot({}),
     AuthModule,
     UsersModule,
-    BooksModule,
-    MedialModule,
+    MediaModule,
+    VideoModule,
   ],
   controllers: [AppController],
   providers: [AppService],

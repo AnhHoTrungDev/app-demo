@@ -13,6 +13,7 @@ import { JwtRefreshAuthGuard } from 'auth/guard/jwt.refresh.guard';
 import { AuthService } from './auth.service';
 import { CurrentUser } from 'common/decorator';
 import { CreateUserDto } from 'users/dto/create-user.dto';
+import { JwtAuthGuard } from './guard/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -35,6 +36,7 @@ export class AuthController {
       ['current-user']: {
         username: currentUser.username,
         fullName: currentUser.fullName,
+        userId: currentUser.userId,
       },
       ...result.access_token,
       ['refresh-token-exp']: result.refresh_token.exp,
@@ -86,5 +88,11 @@ export class AuthController {
       ...result.access_token,
       ['refresh-token-exp']: result.refresh_token.exp,
     };
+  }
+  @UseGuards(JwtAuthGuard)
+  @Get('logout')
+  async logout(@Res({ passthrough: true }) response: IResponse) {
+    response.clearCookie('refresh-token');
+    return {};
   }
 }
